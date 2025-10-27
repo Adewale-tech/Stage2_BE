@@ -12,7 +12,7 @@ DB_PASSWORD = os.getenv("zVpQebhYYstGVTbLNceobfGvwVovtuKN")
 DB_NAME = os.getenv("railway")
 
 DATABASE_URL = (
-    f"mysql+mysqlconnector://{root}:{zVpQebhYYstGVTbLNceobfGvwVovtuKN}"
+    "mysql+mysqlconnector://root:zVpQebhYYstGVTbLNceobfGvwVovtuKN@mysql.railway.internal:3306/railway"
     f"@{mysql.railway.internal}:{3306}/{railway}"
 )
 
