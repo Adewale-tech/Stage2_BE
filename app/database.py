@@ -3,20 +3,33 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
 import os
 
+# Load environment variables from .env
 load_dotenv()
 
-DB_HOST = os.getenv("mysql.railway.internal")
-DB_PORT = os.getenv("3306")
-DB_USER = os.getenv("root")
-DB_PASSWORD = os.getenv("zVpQebhYYstGVTbLNceobfGvwVovtuKN")
-DB_NAME = os.getenv("railway")
+# Get database URL from .env file
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-DATABASE_URL = (
-    "mysql+mysqlconnector://root:zVpQebhYYstGVTbLNceobfGvwVovtuKN@mysql.railway.internal:3306/railway"
+if not DATABASE_URL:
+    raise ValueError("❌ DATABASE_URL is missing in .env file")
+
+# Create SQLAlchemy engine
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    echo=True  # Set to False in production
 )
 
-engine = create_engine("mysql://root:zVpQebhYYstGVTbLNceobfGvwVovtuKN@mysql.railway.internal:3306/railway")
-
+# Configure session
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+# Base class for models
 Base = declarative_base()
+
+
+# DB dependency for FastAPI routes
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
