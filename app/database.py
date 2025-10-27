@@ -16,7 +16,8 @@ DATABASE_URL = (
     f"@{mysql.railway.internal}:{3306}/{railway}"
 )
 
-engine = create_engine(mysql://root:zVpQebhYYstGVTbLNceobfGvwVovtuKN@mysql.railway.internal:3306/railway)
+engine = create_engine("mysql://root:zVpQebhYYstGVTbLNceobfGvwVovtuKN@mysql.railway.internal:3306/railway")
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
