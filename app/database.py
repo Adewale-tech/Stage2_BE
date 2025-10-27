@@ -13,7 +13,6 @@ DB_NAME = os.getenv("railway")
 
 DATABASE_URL = (
     "mysql+mysqlconnector://root:zVpQebhYYstGVTbLNceobfGvwVovtuKN@mysql.railway.internal:3306/railway"
-    f"@{mysql.railway.internal}:{3306}/{railway}"
 )
 
 engine = create_engine("mysql://root:zVpQebhYYstGVTbLNceobfGvwVovtuKN@mysql.railway.internal:3306/railway")
