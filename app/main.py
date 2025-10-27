@@ -12,3 +12,17 @@ def get_db():
         db.close()
 
 app = FastAPI()
+
+
+# Create all tables in DB
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI()
+
+@app.get("/")
+def root():
+    return {"message": "API is running ✅"}
+
+@app.get("/countries")
+def get_countries():
+    return {"message": "Countries endpoint available ✅"}
