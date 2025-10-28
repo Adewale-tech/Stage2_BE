@@ -18,7 +18,7 @@ app = FastAPI()
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-app.include_routers(countries.router)
+app.include_router(countries.router)
 
 @app.get("/")
 def root():
