@@ -18,3 +18,17 @@ class CountryResponse(CountryBase):
 
     class Config:
         from_attributes = True
+
+
+
+class CountrySchema(BaseModel):
+    id: int
+    name: str
+    capital: str | None
+    region: str | None
+    population: int | None
+    flag: str | None
+    currency: str | None
+
+    class Config:
+        orm_mode = True
