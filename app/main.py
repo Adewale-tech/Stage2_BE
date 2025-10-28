@@ -1,29 +1,21 @@
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
-from app.database import SessionLocal, engine, Base
-from app import models, crud, schemas
+from fastapi import FastAPI
+from app.database import Base, engine
 from app.routers import countries
-# DB Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
-app = FastAPI()
-
-
-# Create all tables in DB
+# ✅ Create DB tables before app startup
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+# ✅ Initialize FastAPI once
+app = FastAPI(
+    title="Country Currency & Exchange API",
+    version="1.0.0",
+    description="Stage 2 Backend API for managing countries and currency exchange"
+)
+
+# ✅ Register routers
 app.include_router(countries.router)
 
+# ✅ Root endpoint to check API health
 @app.get("/")
 def root():
-    return {"message": "Country API running successfully✅"}
-
-@app.get("/countries")
-def get_countries():
-    return {"message": "Countries endpoint available ✅"}
+    return {"message": "Country Currency API is running successfully ✅"}
