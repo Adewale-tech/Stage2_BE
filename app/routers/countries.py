@@ -41,6 +41,7 @@ def get_country_by_name(name: str, db: Session = Depends(get_db)):
 
 from app.database import SessionLocal
 from app import crud, schemas
+from app.database import get_db
 
 router = APIRouter(prefix="/countries", tags=["Countries"])
 
