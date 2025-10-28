@@ -24,3 +24,10 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+DATABASE_URL = "sqlite:///./countries.db"
+
+engine = create_engine(mysql://root:DlOrweARmlgJfHvFswdVcLWgrUoAgJwa@tramway.proxy.rlwy.net:40552/railway, connect_args={"check_same_thread": False})
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+

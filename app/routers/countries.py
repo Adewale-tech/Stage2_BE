@@ -37,3 +37,32 @@ def get_country_by_name(name: str, db: Session = Depends(get_db)):
     if not country:
         raise HTTPException(status_code=404, detail="Country not found")
     return country
+
+
+from app.database import SessionLocal
+from app import crud, schemas
+
+router = APIRouter(prefix="/countries", tags=["Countries"])
+
+# DB Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@router.get("/", response_model=list[schemas.CountryResponse])
+def list_countries(db: Session = Depends(get_db)):
+    return crud.get_countries(db)
+
+@router.post("/", response_model=schemas.CountryResponse)
+def create_country(country: schemas.CountryCreate, db: Session = Depends(get_db)):
+    return crud.create_country(db, country)
+
+@router.delete("/{country_id}")
+def remove_country(country_id: int, db: Session = Depends(get_db)):
+    result = crud.delete_country(db, country_id)
+    if not result:
+        raise HTTPException(status_code=404, detail="Country not found")
+    return {"message": "Deleted successfully ✅"}

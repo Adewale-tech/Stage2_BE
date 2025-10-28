@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from app import models
+from . import models, schemas
 
 def get_country_by_name(db: Session, name: str):
     return db.query(models.Country).filter(
@@ -49,3 +50,24 @@ def get_status(db: Session):
         models.Country.last_refreshed_at.desc()
     ).first()
     return total, last[0] if last else None
+
+
+def get_countries(db: Session):
+    return db.query(models.Country).all()
+
+def get_country(db: Session, country_id: int):
+    return db.query(models.Country).filter(models.Country.id == country_id).first()
+
+def create_country(db: Session, country: schemas.CountryCreate):
+    new_country = models.Country(**country.dict())
+    db.add(new_country)
+    db.commit()
+    db.refresh(new_country)
+    return new_country
+
+def delete_country(db: Session, country_id: int):
+    country = get_country(db, country_id)
+    if country:
+        db.delete(country)
+        db.commit()
+    return country

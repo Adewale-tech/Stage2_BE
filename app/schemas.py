@@ -32,3 +32,6 @@ class CountrySchema(BaseModel):
 
     class Config:
         orm_mode = True
+
+        class CountryCreate(CountryBase):
+    pass
