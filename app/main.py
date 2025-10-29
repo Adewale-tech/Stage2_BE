@@ -1,12 +1,18 @@
 from fastapi import FastAPI
 from app.database import Base, engine
-from app.routers.countries import router as countries_router
+from app.routers import countries
 
+# Create DB tables
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Country API", description="FastAPI + MySQL Railway Integration", version="1.0.0")
+app = FastAPI(
+    title="Country API",
+    description="FastAPI + MySQL Railway Integration",
+    version="1.0.0"
+)
 
-app.include_router(countries_router, prefix="/countries", tags=["Countries"])
+# Include router ✅
+app.include_router(countries.router)
 
 @app.get("/")
 def root():
