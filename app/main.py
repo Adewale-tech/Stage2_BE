@@ -5,15 +5,11 @@ from app.routers import countries
 # Create DB tables
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(
-    title="Country API",
-    description="FastAPI + MySQL Railway Integration",
-    version="1.0.0"
-)
+app = FastAPI(title="Country Currency API")
 
-# Include router ✅
+# Include all country routes
 app.include_router(countries.router)
 
 @app.get("/")
 def root():
-    return {"message": "Country API running successfully ✅"}
+    return {"message": "Country API is Live ✅ 🚀"}
