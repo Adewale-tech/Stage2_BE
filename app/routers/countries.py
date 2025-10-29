@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont
 import os
 from app.utils import fetch_countries_data, fetch_exchange_rates, compute_gdp, generate_summary_image
 from app import crud, models
-from fastapi import query
+from fastapi import Query
 from fastapi.responses import FileResponse
 
 router = APIRouter(prefix="/countries", tags=["Countries"])
