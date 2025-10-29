@@ -137,7 +137,8 @@ def delete_country(name: str, db: Session = Depends(get_db)):
     db.commit()
     if not deleted:
         raise HTTPException(status_code=404, detail="Country not found")
-         db.delete(country)
+
+    db.delete(country)
     db.commit()
     return {"message": "Country deleted successfully ✅"}
 
