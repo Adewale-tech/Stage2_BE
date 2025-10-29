@@ -6,6 +6,8 @@ import random
 from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
 import os
+from app.utils import fetch_countries_data, fetch_exchange_rates, compute_gdp, generate_summary_image
+from app import crud, models
 
 router = APIRouter(prefix="/countries", tags=["Countries"])
 
@@ -153,3 +155,50 @@ def get_image():
         raise HTTPException(status_code=404, detail="Summary image not found")
     
     return Response(content=open(summary_image_path, "rb").read(), media_type="image/png")
+
+
+async def refresh_countries(db: Session = Depends(get_db)):
+    countries = await fetch_countries_data()
+    exchange_rates = await fetch_exchange_rates()
+
+    if not countries or not exchange_rates:
+        raise HTTPException(status_code=503, detail="External data source unavailable")
+
+    for item in countries:
+        name = item.get("name")
+        population = item.get("population", 0)
+        region = item.get("region")
+        capital = item.get("capital")
+        flag_url = item.get("flag")
+
+        currency_code = None
+        exchange_rate = None
+        estimated_gdp = None
+
+        currencies = item.get("currencies", [])
+        if currencies and isinstance(currencies, list):
+            currency_code = currencies[0].get("code")
+
+        if currency_code and currency_code in exchange_rates:
+            exchange_rate = exchange_rates[currency_code]
+            estimated_gdp = compute_gdp(population, exchange_rate) or 0
+
+        country_data = {
+            "name": name,
+            "capital": capital,
+            "region": region,
+            "population": population,
+            "currency_code": currency_code,
+            "exchange_rate": exchange_rate,
+            "estimated_gdp": estimated_gdp,
+        }
+
+        crud.upsert_country(db, country_data)
+
+    # Generate summary image
+    all_c = db.query(models.Country).order_by(models.Country.estimated_gdp.desc()).all()
+    filepath = generate_summary_image(
+        len(all_c), all_c[:5], datetime.utcnow()
+    )
+
+    return {"message": "Refresh completed", "total": len(all_c), "image": filepath}
