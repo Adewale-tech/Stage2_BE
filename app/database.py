@@ -7,7 +7,7 @@ import os
 load_dotenv()
 
 # Use your Railway URL directly (no os.getenv needed for now)
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:DlOrweARmlgJfHvFswdVcLWgrUoAgJwa@tramway.proxy.rlwy.net:40552/railway"
+SQLALCHEMY_DATABASE_URL = "mysql+pymysql://root:CqIQNSROWlbDraHchrXMKYzCWsUXkqYP@ballast.proxy.rlwy.net:18004/railway"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
