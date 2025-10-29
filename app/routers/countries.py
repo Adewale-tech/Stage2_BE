@@ -8,6 +8,8 @@ from PIL import Image, ImageDraw, ImageFont
 import os
 from app.utils import fetch_countries_data, fetch_exchange_rates, compute_gdp, generate_summary_image
 from app import crud, models
+from fastapi import query
+from fastapi.responses import FileResponse
 
 router = APIRouter(prefix="/countries", tags=["Countries"])
 
@@ -135,12 +137,15 @@ def delete_country(name: str, db: Session = Depends(get_db)):
     db.commit()
     if not deleted:
         raise HTTPException(status_code=404, detail="Country not found")
+         db.delete(country)
+    db.commit()
     return {"message": "Country deleted successfully ✅"}
 
 
 # ✅ STATUS Endpoint
 @router.get("/status")
 def status(db: Session = Depends(get_db)):
+    count = db.query(models.Country).count()
     latest = db.query(models.Country).order_by(models.Country.last_refreshed_at.desc()).first()
     return {
         "total_countries": db.query(models.Country).count(),
@@ -202,3 +207,32 @@ async def refresh_countries(db: Session = Depends(get_db)):
     )
 
     return {"message": "Refresh completed", "total": len(all_c), "image": filepath}
+
+@router.get("/")
+def get_countries(
+    region: str = None,
+    currency: str = None,
+    sort: str = None,
+    db: Session = Depends(get_db),
+):
+    query = db.query(models.Country)
+
+    if region:
+        query = query.filter(models.Country.region.ilike(region))
+
+    if currency:
+        query = query.filter(models.Country.currency_code == currency)
+
+    if sort == "gdp_desc":
+        query = query.order_by(models.Country.estimated_gdp.desc())
+    elif sort == "gdp_asc":
+        query = query.order_by(models.Country.estimated_gdp.asc())
+
+    return query.all()
+
+@router.get("/image")
+def summary_image():
+    file_path = "cache/summary.png"
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Summary image not found")
+    return FileResponse(file_path)
