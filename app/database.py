@@ -8,7 +8,7 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("mysql://root:DlOrweARmlgJfHvFswdVcLWgrUoAgJwa@tramway.proxy.rlwy.net:40552/railway")
 
-engine = create_engine(mysql://root:DlOrweARmlgJfHvFswdVcLWgrUoAgJwa@tramway.proxy.rlwy.net:40552/railway)
+engine = create_engine(mysql+pymysql://root:DlOrweARmlgJfHvFswdVcLWgrUoAgJwa@tramway.proxy.rlwy.net:40552/railway)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
