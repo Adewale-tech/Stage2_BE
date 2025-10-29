@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models, schemas
-import requests
 import random
 from datetime import datetime
 from PIL import Image, ImageDraw, ImageFont
