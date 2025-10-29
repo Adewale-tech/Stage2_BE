@@ -1,4 +1,3 @@
-import httpx
 import random
 from PIL import Image, ImageDraw, ImageFont
 import os
